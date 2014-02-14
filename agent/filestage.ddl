@@ -21,7 +21,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :description => 'Destination on the end system to store file',
         :optional     => false,
         :type        => :string,
-        :validation  => :absolute_path,
+        :validation  => :absolute_file_path,
         :maxlength   => 0
 
   input :force,
