@@ -10,7 +10,7 @@ module MCollective
         dest = Pathname.new(request[:dest])
 
         reply.fail!(reply[:summary] = "Cannot Stage File - destination directory not present: #{dest.dirname}") unless dest.dirname.exist? && dest.dirname.directory?
-        reply.fail!(reply[:summary] = "Cannot Stage File - destination directory not writable: #{dest.dirname}") unless dest.dirname.writeable?
+        reply.fail!(reply[:summary] = "Cannot Stage File - destination directory not writable: #{dest.dirname}") unless dest.dirname.writable?
 
         if dest.exist?
           unless request[:force]
