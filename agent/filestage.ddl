@@ -27,7 +27,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
   input :force,
         :prompt      => 'Force Overwrite',
         :description => 'Force the overwrite of file already at the destination',
-        :type        => :bool,
+        :type        => :boolean,
         :default     => false,
         :optional    => false
 
