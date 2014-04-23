@@ -121,7 +121,7 @@ module MCollective
         lock.close
         dstfile.close
 
-        reply.fail!("Stage Failed to Start, please check operation lock file")
+        reply.fail!("Stage Failed to Start, please check operation lock file") unless child
         if child
           Process.detach(child)
         end
