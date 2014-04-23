@@ -9,7 +9,7 @@ metadata :name        => 'File Staging Agent',
 action "stage", :description => 'Stage a file from a source to a destination' do
 
   input :source,
-        :promt       => 'File Source',
+        :prompt       => 'File Source',
         :description => 'Remote location to stage file from',
         :optional    => false,
         :type        => :string,
@@ -17,7 +17,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :maxlength   => 0
 
   input :dest,
-        :promt       => 'File Destination',
+        :prompt       => 'File Destination',
         :description => 'Destination on the end system to store file',
         :optional    => false,
         :type        => :string,
@@ -25,7 +25,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :maxlength   => 0
 
   input :force,
-        :promtp      => 'Force Overwrite',
+        :prompt      => 'Force Overwrite',
         :description => 'Force the overwrite of file already at the destination',
         :type        => :bool,
         :default     => false,
@@ -40,7 +40,7 @@ end
 action "status", :description => 'Display status of running stage operations' do
 
   input :dest,
-        :promt       => 'Operation Destination',
+        :prompt       => 'Operation Destination',
         :description => 'Path of file currently being staged. Check if file is still staging or done.',
         :optional    => true,
         :type        => :string,
