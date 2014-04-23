@@ -16,7 +16,7 @@ module MCollective
           unless request[:force]
             reply.fail!(reply[:summary] = "Cannot Stage File - destination file already exists. Set force to true to overwrite file")
           else
-            Log.notice("Existing file will be attempted to be overwritten")
+            Log.info("Existing file will be attempted to be overwritten")
           end
 
           reply.fail!(reply[:summary] = "Cannot Stage File - cannot overwrite file at destination") unless dest.writable?
@@ -25,7 +25,9 @@ module MCollective
 
         uri = URI.parse(URI.escape(request[:source]))
 
-        result = fork_stage(uri, dest)
+        fork_stage(uri, dest)
+
+        reply.statusmsg = "Starting Stage Operation from #{uri} to #{dest}"
       end
 
       action "status" do
@@ -48,7 +50,7 @@ module MCollective
             lock.close
           end
 
-          reply.fail("Cannot Stage File - #{e.message}")
+          reply.fail!("Cannot Stage File - #{e.message}")
         end
 
         child = fork do
@@ -59,6 +61,7 @@ module MCollective
                 details[:summary] = "Staging from #{source.to_s} to #{dest}"
                 lock.truncate 0
                 lock.write(details.to_json)
+                lock.flush
                 begin
                   Net::HTTP.start(source.host, source.port, :use_ssl => source.scheme == 'https'){ |http|
                     http.request_get(source.path){ |resp|
@@ -88,6 +91,7 @@ module MCollective
                 details[:summary] = "Copying file from #{source.path} to #{dest}"
                 lock.truncate 0
                 lock.write(details.to_json)
+                lock.flush
 
                 begin
                   dstfile.close
@@ -117,10 +121,9 @@ module MCollective
         lock.close
         dstfile.close
 
-        return 1 if child.nil?
+        reply.fail!("Stage Failed to Start, please check operation lock file")
         if child
           Process.detach(child)
-          return 0
         end
       end
     end
