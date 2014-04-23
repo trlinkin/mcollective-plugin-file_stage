@@ -29,7 +29,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :description => 'Force the overwrite of file already at the destination',
         :type        => :boolean,
         :default     => false,
-        :optional    => false
+        :optional    => true
 
   output :summary,
          :description => "Initial status of the staging operation",
