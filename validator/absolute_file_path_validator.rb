@@ -9,7 +9,6 @@ module MCollective
 
         path = Pathname.new(raw_path)
         raise "Cannot use relative paths" unless path.absolute?
-        raise "Path must be a file" unless path.file?
       end
     end
   end
