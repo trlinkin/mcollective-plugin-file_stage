@@ -30,11 +30,6 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :type        => :boolean,
         :default     => false,
         :optional    => true
-
-  output :summary,
-         :description => "Initial status of the staging operation",
-         :display_as  => "Operation Status",
-         :default     => "unknown status"
 end
 
 action "status", :description => 'Display status of running stage operations' do

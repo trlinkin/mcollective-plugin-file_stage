@@ -9,17 +9,17 @@ module MCollective
       action "stage" do
         dest = Pathname.new(request[:dest])
 
-        reply.fail!(reply[:summary] = "Cannot Stage File - destination directory not present: #{dest.dirname}") unless dest.dirname.exist? && dest.dirname.directory?
-        reply.fail!(reply[:summary] = "Cannot Stage File - destination directory not writable: #{dest.dirname}") unless dest.dirname.writable?
+        reply.fail!("Cannot Stage File - destination directory not present: #{dest.dirname}") unless dest.dirname.exist? && dest.dirname.directory?
+        reply.fail!("Cannot Stage File - destination directory not writable: #{dest.dirname}") unless dest.dirname.writable?
 
         if dest.exist?
           unless request[:force]
-            reply.fail!(reply[:summary] = "Cannot Stage File - destination file already exists. Set force to true to overwrite file")
+            reply.fail!("Cannot Stage File - destination file already exists. Set force to true to overwrite file")
           else
             Log.info("Existing file will be attempted to be overwritten")
           end
 
-          reply.fail!(reply[:summary] = "Cannot Stage File - cannot overwrite file at destination") unless dest.writable?
+          reply.fail!("Cannot Stage File - cannot overwrite file at destination") unless dest.writable?
           reply.fail!("Cannot Stage File - exisitng file is a directory, cannot overwrite") if dest.directory?
         end
 
