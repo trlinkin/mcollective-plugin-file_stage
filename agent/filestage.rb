@@ -71,6 +71,9 @@ module MCollective
                 rescue Exception => e
                   details[:status] = "failed"
                   details[:summary] = "Cannot Stage File - #{e.message}"
+                else
+                  details[:status] = 'success'
+                  details[:summary] = "Finished Staging #{dest}"
                 ensure
                   dstfile.close
                   lock.truncate 0
