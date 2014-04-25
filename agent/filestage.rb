@@ -18,7 +18,6 @@ module MCollective
           else
             Log.info("Existing file will be attempted to be overwritten")
           end
-
           reply.fail!("Cannot Stage File - cannot overwrite file at destination") unless dest.writable?
           reply.fail!("Cannot Stage File - exisitng file is a directory, cannot overwrite") if dest.directory?
         end
