@@ -39,7 +39,7 @@ action "status", :description => 'Display status of running stage operations' do
         :description => 'Path of file currently being staged. Check if file is still staging or done.',
         :optional    => true,
         :type        => :string,
-        :validation  => :absolute_path,
+        :validation  => :absolute_file_path,
         :maxlength   => 0
 
   output :status,
