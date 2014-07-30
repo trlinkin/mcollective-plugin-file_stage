@@ -30,12 +30,34 @@ module MCollective
       end
 
       action "status" do
+	results = String.new
+
+        Dir.glob('/tmp/staging_*').reverse.each do |file|
+          begin
+            status_json = File.read(file)
+            status = JSON.parse(status_json)
+
+            if request[:dest] && request[:dest] == status[:dest]
+              results = format_status(status)
+              break
+            else request[:dest].nil?
+              results << format_status(status)
+            end
+          end
+        end
+
+        if results.empty?
+          results = "No status(es) found"
+        end
+
+        reply.statusmsg = results
       end
 
       def fork_stage(source, dest)
         begin
-          lock = File.open("/tmp/staging_#{Time.now.to_i}", File::CREAT|File::TRUNC|File::RDWR, 0644)
-          details = {:src => source.to_s, :dst => dest, :status => 'starting', :summary=> nil}
+          start_time = Time.now.to_i
+          lock = File.open("/tmp/staging_#{start_time}", File::CREAT|File::TRUNC|File::RDWR, 0644)
+          details = {:src => source.to_s, :dst => dest, :status => 'starting', :summary=> nil, :start_time => start_time}
           lock.write(details.to_json)
 
           dstfile = File.open(dest, File::CREAT|File::TRUNC|File::RDWR)
@@ -44,7 +66,8 @@ module MCollective
           if lock.kind_of? File
             details[:status] = 'failed'
             details[:summary] = e.message
-            lock.truncate 0
+            lock.truncate(0)
+            lock.seek(0)
             lock.write(details.to_json)
             lock.close
           end
@@ -58,7 +81,8 @@ module MCollective
               when 'http', 'https'
                 details[:status] = "running"
                 details[:summary] = "Staging from #{source.to_s} to #{dest}"
-                lock.truncate 0
+                lock.truncate(0)
+                lock.seek(0)
                 lock.write(details.to_json)
                 lock.flush
                 begin
@@ -78,7 +102,8 @@ module MCollective
                   details[:summary] = "Finished Staging #{dest}"
                 ensure
                   dstfile.close
-                  lock.truncate 0
+                  lock.truncate(0)
+                  lock.seek(0)
                   lock.write(details.to_json)
                 end
               when 'ftp'
@@ -88,7 +113,8 @@ module MCollective
               when 'file', nil
                 details[:status] = 'running'
                 details[:summary] = "Copying file from #{source.path} to #{dest}"
-                lock.truncate 0
+                lock.truncate(0)
+                lock.seek(0)
                 lock.write(details.to_json)
                 lock.flush
 
@@ -103,7 +129,8 @@ module MCollective
                   details[:status] = 'success'
                   details[:summary] = "Finished Staging #{dest}"
                 ensure
-                  lock.truncate 0
+                  lock.truncate(0)
+                  lock.seek(0)
                   lock.write(details.to_json)
                 end
               end
@@ -124,6 +151,19 @@ module MCollective
         if child
           Process.detach(child)
         end
+      end
+
+      def format_status(status)
+
+        operation_time = "#{Time.at(status['start_time'].to_i).localtime} #{Time.now.getlocal.zone}"
+
+	"\n---------------------------------------------\n"\
+        "Destination: #{status['dst']}\n\n"\
+        "Source:      #{status['src']}\n"\
+        "Status:      #{status['status']}\n"\
+        "Summary:     #{status['summary']}\n"\
+        "Started:     #{operation_time}\n"\
+        "---------------------------------------------\n"
       end
     end
   end
