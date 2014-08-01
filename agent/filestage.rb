@@ -30,7 +30,7 @@ module MCollective
       end
 
       action "status" do
-	results = String.new
+        results = String.new
 
         Dir.glob('/tmp/staging_*').sort.each do |file|
           begin
@@ -162,7 +162,7 @@ module MCollective
 
         operation_time = "#{Time.at(status['start_time'].to_i).localtime} #{Time.now.getlocal.zone}"
 
-	"\n---------------------------------------------\n"\
+        "\n---------------------------------------------\n"\
         "Destination: #{status['dst']}\n\n"\
         "Source:      #{status['src']}\n"\
         "Status:      #{status['status']}\n"\
