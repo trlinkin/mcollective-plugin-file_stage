@@ -32,16 +32,17 @@ module MCollective
       action "status" do
 	results = String.new
 
-        Dir.glob('/tmp/staging_*').reverse.each do |file|
+        Dir.glob('/tmp/staging_*').sort.each do |file|
           begin
             status_json = File.read(file)
             status = JSON.parse(status_json)
-
-            if request[:dest] && request[:dest] == status[:dest]
+            if request[:dest] && request[:dest] == status['dst']
               results = format_status(status)
+              reply[:status] = status['status']
               break
-            else request[:dest].nil?
+            elsif request[:dest].nil?
               results << format_status(status)
+              reply['status'] = 'aggregate'
             end
           end
         end
@@ -77,6 +78,10 @@ module MCollective
 
         child = fork do
           grandchild = fork do
+
+            # Set the process name so we don't lock the restarting of MCO
+            $0 = "filestage #{dest}"
+
             case source.scheme
               when 'http', 'https'
                 details[:status] = "running"
