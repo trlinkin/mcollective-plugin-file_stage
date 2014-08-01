@@ -1,15 +1,15 @@
 mcollective-plugin-file_stage
 =============================
 
-# Usage
+## Usage
 
-## Stage Action
+### Stage Action
 
 The stage action is used to start a staging operation.
 
 #### Required Parameters
 
-**source**
+##### source
 The source parameter is used to indicate from where the filestage plugin
 will retrieve a file. It can be a fully qualified file path locally on
 the system or a URI to a file in a remote location. The supported
@@ -18,32 +18,32 @@ protocols for transfer are HTTP and FTP (future, not yet available).
 When using HTTP to transfer the file, a direct link to the file must be
 provided. The filestage plugin will not follow redirects.
 
-**dest**
+##### dest
 The location on the system where the file will be staged to. This
 location must be a fully qualified file path.
 
 #### Optional Parameters
 
-**force**
+#####force
 If force is set to 'true' it will cause filestage to overwrite any file
 at a destination if it already exists.
 
 #### Example Usage
-This example will download the robots.txt file from whitehouse.gove and
+This example will download the robots.txt file from whitehouse.gov and
 replacing whatever is at /tmp/secrets on the machine performing the stage
 operation.
 ```
 peadmin@master:/root$ mco rpc filestage stage source=http://www.whitehouse.gov/robots.txt dest=/tmp/secrets force=true
 ```
 
-## Status Action
+### Status Action
 
 The status action is used to see the state of current and past staging
 operations.
 
 #### Optional Parameters
 
-**dest**
+##### dest
 If provided, the status action will focus on the most recent status, as
 the same location could be staged to more than once, of a staging
 operation that placed a file in the destination specified. If no
