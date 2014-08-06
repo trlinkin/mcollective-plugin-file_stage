@@ -13,7 +13,7 @@ action "stage", :description => 'Stage a file from a source to a destination' do
         :description => 'Remote location to stage file from',
         :optional    => false,
         :type        => :string,
-        :validation  => :stageing_src,
+        :validation  => :staging_src,
         :maxlength   => 0
 
   input :dest,
