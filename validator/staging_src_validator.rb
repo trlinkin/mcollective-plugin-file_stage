@@ -3,7 +3,7 @@ require 'pathname'
 
 module MCollective
   module Validator
-    class Stageing_srcValidator
+    class Staging_srcValidator
       def self.validate(src)
         Validator.typecheck(src, :string)
         Validator.validate(src, :shellsafe)
